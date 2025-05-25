@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="BananaPass: membresía concierge para viajeros en México. Acceso rápido y personalizado a experiencias auténticas." />
+  <meta name="theme-color" content="#FFB800" />
+  <title>BananaPass – Concierge de experiencias en México</title>
+  <link rel="icon" href="assets/favicon.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* Variables y resets */
+    :root { --color-primary: #FFB800; --color-dark: #222; --color-light: #FAFAFA; --color-text: #333; --font-family: 'Inter', sans-serif; --radius: 0.5rem; --transition: 0.3s; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+    body { font-family: var(--font-family); color: var(--color-text); background: #fff; line-height: 1.6; }
+    a { text-decoration: none; color: inherit; }
+    img, video { display: block; max-width: 100%; height: auto; }
+    button, input, select { font-family: inherit; }
+
+    /* Header con video de fondo */
+    header { position: relative; overflow: hidden; height: 80vh; min-height: 400px; display: flex; align-items: center; justify-content: center; background: #000; }
+    #hero-video { position: absolute; top: 50%; left: 50%; width: 100%; height: 100%; object-fit: cover; transform: translate(-50%, -50%); }
+    .header-content { position: relative; z-index: 1; text-align: center; color: #fff; padding: 1rem; }
+    .header-content h1 { font-size: 2.5rem; margin-bottom: 1rem; text-shadow: 1px 1px 4px rgba(0,0,0,0.6); }
+    .header-content p { font-size: 1.2rem; margin-bottom: 2rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.6); }
+    .btn-primary { background: var(--color-primary); color: var(--color-dark); padding: .75rem 1.5rem; border: none; border-radius: var(--radius); cursor: pointer; transition: opacity var(--transition); }
+    .btn-primary:hover { opacity: 0.9; }
+
+    main { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; }
+    section { margin-bottom: 4rem; }
+    section h2 { font-size: 2rem; text-align: center; margin-bottom: 1rem; }
+
+    /* Beneficios */
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+    .feature-card { background: var(--color-light); padding: 1.5rem; border-radius: var(--radius); text-align: center; transition: transform var(--transition), box-shadow var(--transition); }
+    .feature-card:hover { transform: translateY(-5px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    .feature-card span { font-size: 2rem; margin-bottom: .5rem; display: block; }
+
+    /* Cómo funciona */
+    .steps-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; }
+    .step-card { background: var(--color-light); flex: 1; min-width: 200px; padding: 1.5rem; border-radius: var(--radius); text-align: center; transition: background var(--transition); }
+    .step-card:hover { background: #fffbe6; }
+    .step-card h4 { margin-bottom: .5rem; }
+
+    /* Galería de experiencias */
+    .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+
+    /* Formulario */
+    #signup { text-align: center; }
+    form { max-width: 400px; margin: 0 auto; display: flex; flex-direction: column; }
+    form input, form select { padding: .75rem; border: 1px solid #ccc; border-radius: var(--radius); margin-bottom: 1rem; transition: border-color var(--transition); }
+    form input:focus, form select:focus { border-color: var(--color-primary); outline: none; }
+    form button { margin-top: .5rem; }
+    #signup-thanks { display: none; color: var(--color-primary); font-weight: bold; margin-top: 1rem; }
+
+    /* FAQ */
+    .faq-container { max-width: 800px; margin: 0 auto; }
+    .faq-item { border-bottom: 1px solid #ddd; }
+    .faq-question { width: 100%; text-align: left; padding: 1rem; background: var(--color-light); border: none; outline: none; font-size: 1rem; cursor: pointer; position: relative; }
+    .faq-question::after { content: '+'; position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); transition: transform var(--transition); }
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height var(--transition); padding: 0 1rem; }
+    .faq-answer p { padding: 1rem 0; }
+    .faq-item.active .faq-answer { max-height: 200px; }
+    .faq-item.active .faq-question::after { transform: translateY(-50%) rotate(45deg); }
+
+    /* Chat flotante de WhatsApp */
+    .whatsapp-chat { position: fixed; bottom: 20px; right: 20px; background: var(--color-primary); color: var(--color-dark); width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 10000; transition: transform var(--transition); }
+    .whatsapp-chat:hover { transform: scale(1.1); }
+
+    /* Footer */
+    footer { background: #f4f4f4; padding: 2rem 1rem; text-align: center; font-size: 0.9rem; color: #666; }
+    .social-icons a { margin: 0 0.5rem; font-size: 1.5rem; transition: transform var(--transition); }
+    .social-icons a:hover { transform: scale(1.1); }
+
+    /* Dark mode */
+    @media (prefers-color-scheme: dark) {
+      body { background: #121212; color: #ddd; }
+      .feature-card, .step-card, .faq-question { background: #1e1e1e; }
+      form input, form select { background: #1e1e1e; color: #ddd; border-color: #444; }
+      footer { background: #1e1e1e; color: #888; }
+    }
+    @media (max-width: 600px) {
+      .header-content h1 { font-size: 1.8rem; }
+      .header-content p { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <noscript><div style="background:#ffdddd;padding:1rem;text-align:center;">Activa JavaScript para una mejor experiencia 🙏</div></noscript>
+
+  <header role="banner">
+    <video id="hero-video" autoplay muted playsinline preload="auto" poster="assets/hero.jpg">
+      <source src="assets/hero.mp4" type="video/mp4">
+      Tu navegador no soporta video.
+    </video>
+    <div class="header-content">
+      <h1>Tu pase directo a experiencias únicas en México</h1>
+      <p>Con BananaPass, accede a actividades auténticas sin filas ni apps adicionales.</p>
+      <button class="btn-primary" onclick="document.getElementById('signup').scrollIntoView({ behavior: 'smooth' });">¡Únete ahora 🚀</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Beneficios -->
+    <section id="features" aria-labelledby="features-title">
+      <h2 id="features-title">¿Por qué elegir BananaPass?</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <span>🥭</span><h3>Personalización Inteligente</h3>
+          <p>Recomendaciones según tu estilo de viaje y preferencias.</p>
+        </div>
+        <div class="feature-card">
+          <span>🚖</span><h3>Acceso Inmediato</h3>
+          <p>Reservas y entradas instantáneas sin esperas.</p>
+        </div>
+        <div class="feature-card">
+          <span>💬</span><h3>Soporte Humano</h3>
+          <p>Atención personalizada de un concierge 24/7.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cómo funciona -->
+    <section id="how-it-works" aria-labelledby="how-title">
+      <h2 id="how-title">¿Cómo funciona?</h2>
+      <div class="steps-grid">
+        <div class="step-card"><h4>Paso 1</h4><p>Escoge tu pase y experiencias preferidas.</p></div>
+        <div class="step-card"><h4>Paso 2</h4><p>Recibe tu pase digital en tu correo.</p></div>
+        <div class="step-card"><h4>Paso 3</h4><p>Disfruta de beneficios exclusivos bajo demanda.</p></div>
+      </div>
+    </section>
+
+    <!-- Galería de experiencias -->
+    <section id="gallery" aria-labelledby="gallery-title">
+      <h2 id="gallery-title">Galería de experiencias</h2>
+      <div class="gallery">
+        <img src="assets/experience1.jpg" alt="Visita a una pirámide" loading="lazy">
+        <img src="assets/experience2.jpg" alt="Recorrido por CDMX moderna" loading="lazy">
+      </div>
+    </section>
+
+    <!-- Registro -->
+    <section id="signup" aria-labelledby="signup-title">
+      <h2 id="signup-title">Sé de los primeros en probar</h2>
+      <p>Déjanos tus datos y te avisaremos cuando lancemos.</p>
+      <form id="signup-form">
+        <input type="text" id="name" placeholder="Tu nombre" required>
+        <input type="email" id="email" placeholder="Tu correo" required>
+        <select id="traveler-type" required>
+          <option value="" disabled selected>Selecciona tu tipo de viajero</option>
+          <option value="internacional">Turista internacional</option>
+          <option value="local">Explorador local</option>
+          <option value="negocios">Viajero de negocios</option>
+        </select>
+        <button type="submit" class="btn-primary">Unirme a la lista</button>
+      </form>
+      <div id="signup-thanks">✔️ ¡Gracias por unirte! Pronto recibirás noticias.</div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" aria-labelledby="faq-title">
+      <h2 id="faq-title">Preguntas Frecuentes</h2>
+      <div class="faq-container">
+        <div class="faq-item">
+          <button class="faq-question">¿Qué incluye la membresía?</button>
+          <div class="faq-answer"><p>La membresía incluye acceso a actividades exclusivas, atención 24/7 y recomendaciones personalizadas.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">¿Puedo cancelar en cualquier momento?</button>
+          <div class="faq-answer"><p>Sí, puedes cancelar tu membresía sin penalizaciones.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">¿Cómo funciona el soporte 24/7?</button>
+          <div class="faq-answer"><p>Nuestro concierge está disponible vía WhatsApp y correo electrónico.</p></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Chat flotante de WhatsApp -->
+  <a href="https://wa.me/525543800343?text=Hola%20BananaPass,%20quiero%20más%20info" class="whatsapp-chat" target="_blank" aria-label="Chatea con nosotros por WhatsApp">💬</a>
+
+  <!-- Footer -->
+  <footer role="contentinfo">
+    <p>&copy; 2025 BananaPass. Todos los derechos reservados.</p>
+    <div class="social-icons">
+      <a href="#">🐦</a><a href="#">📘</a><a href="#">📸</a>
+    </div>
+    <p><a href="#">Política de privacidad</a> | <a href="#">Términos y condiciones</a></p>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    // Form submission
+    document.getElementById('signup-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      this.style.display = 'none';
+      document.getElementById('signup-thanks').style.display = 'block';
+    });
+    // FAQ accordion
+    document.querySelectorAll('.faq-question').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        this.parentElement.classList.toggle('active');
+      });
+    });
+    // Detener video en el último segundo
+    var video = document.getElementById('hero-video');
+    video.addEventListener('timeupdate', function() {
+      if (video.currentTime >= video.duration - 0.1) video.pause();
+    });
+  </script>
+</body>
+</html>
+
