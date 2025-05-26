@@ -2,446 +2,610 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="description" content="BananaPass: concierge de experiencias únicas en México. Accede a itinerarios VIP, reservas y asistencia 24/7 por WhatsApp.">
   <meta name="theme-color" content="#FFDD57">
+  <link rel="manifest" href="/manifest.json">
   <title>BananaPass – Concierge de experiencias en México</title>
-  
-  <!-- Fuentes -->
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "BananaPass",
+    "url": "https://bananapass.com",
+    "logo": "https://bananapass.com/logo.png",
+    "description": "Concierge de experiencias únicas en México.",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Ciudad de México",
+      "addressRegion": "CDMX",
+      "addressCountry": "MX"
+    }
+  }
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css" />
 
   <style>
-    :root {
-      --yellow: #FFDD57;
-      --green:  #25D366;
-      --dark:   #222;
-      --light:  #FAFAFA;
-      --text:   #333;
-      --radius: 0.5rem;
-      --font-heading: 'Montserrat', sans-serif;
-      --font-body:    'Open Sans', sans-serif;
-    }
-    *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
-    html { scroll-behavior: smooth; }
-    body { font-family: var(--font-body); color: var(--text); background:#fff; line-height:1.6; }
-    a { text-decoration:none; color: inherit; }
-    img { display:block; max-width:100%; height:auto; }
+    /* Reset & Root Variables */
+    :root { --yellow:#FFDD57;--green:#25D366;--dark:#222;--light:#FAFAFA;--bg:var(--light);--text:#333;--gray:#f0f0f0;--radius:.5rem;--font-heading:'Montserrat',sans-serif;--font-body:'Open Sans',sans-serif;--transition:.3s; }
+    [data-theme='dark']{--bg:#222;--text:#EEE;--gray:#333;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;font-size:16px;}
+    body{font-family:var(--font-body);background:var(--bg);color:var(--text);line-height:1.6;transition:background var(--transition),color var(--transition);}
+    a{color:inherit;text-decoration:none;}
+    img,video{max-width:100%;height:auto;display:block;}
 
-    /* Botones */
-    .btn-primary {
-      display:inline-block;
-      background: var(--green);
-      color: var(--light);
-      font-weight:600;
-      padding:.75rem 1.5rem;
-      border-radius: var(--radius);
-      transition: transform .2s;
-    }
-    .btn-primary:hover { transform: scale(1.05); }
+    /* Accessibility: Skip Link */
+    .skip-link{position:absolute;top:-40px;left:0;background:#000;color:#fff;padding:8px;z-index:100;transition:top .3s;}
+    .skip-link:focus{top:0;}
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
 
-    /* Hero */
-    #hero {
-      text-align:center;
-      padding:4rem 1rem;
-      background: var(--yellow) url('assets/hero.jpg') center/cover no-repeat;
-      color: var(--dark);
-    }
-    #hero h1 {
-      font-family: var(--font-heading);
-      font-size:2.5rem;
-      margin-bottom:1rem;
-    }
-    #hero p {
-      font-size:1.2rem;
-      margin-bottom:2rem;
-    }
+    /* UI Elements: Progress Bar */
+    #progress{position:fixed;top:0;left:0;width:0;height:4px;background:var(--green);z-index:9999;transition:width .25s;}
 
-    main { max-width:1200px; margin:0 auto; padding:2rem 1rem; }
+    /* Navigation */
+    nav{background:rgba(255,255,255,.8);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);position:fixed;top:0;width:100%;z-index:1000;display:flex;justify-content:center;padding:.5rem 1rem;font-family:var(--font-body);}
+    [data-theme='dark'] nav{background:rgba(34,34,34,.8);}
+    .nav-container{max-width:1200px;width:100%;display:flex;justify-content:space-between;align-items:center;}
+    .nav-container .logo img { height: 30px; /* Ajusta la altura de tu logo */ vertical-align: middle; }
+    .nav-links{display:flex;gap:1rem;}
+    .nav-links a{font-weight:600;transition:color var(--transition);}
+    .nav-links a:hover{color:var(--green);}
+    .nav-cta a{padding:.5rem 1rem;background:var(--green);color:var(--dark);border-radius:var(--radius);} /* Color de texto cambiado para contraste */
+    @media(max-width:1023px){nav{display:none;}body{padding-top:0;}} /* Considerar menú hamburguesa para móvil */
 
-    /* Beneficios */
-    #benefits { text-align:center; margin-bottom:4rem; }
-    #benefits .grid {
-      display:grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
-      gap:1.5rem;
-    }
-    .benefit-card {
-      background: var(--light);
-      padding:1.5rem;
-      border-radius: var(--radius);
-      transition: transform .2s;
-    }
-    .benefit-card:hover { transform: translateY(-5px); }
-    .benefit-card span {
-      font-size:2rem;
-      display:block;
-      margin-bottom:.5rem;
-    }
+    /* UI Elements: Theme Toggle */
+    #theme-toggle{position:fixed;top:1rem;right:1rem;background:var(--gray);border:none;padding:.5rem;border-radius:50%;cursor:pointer;z-index:1001;transition:background var(--transition);}
+    #theme-toggle:hover{background:var(--yellow);}
 
-    /* Cómo funciona */
-    #how-it-works { text-align:center; margin-bottom:4rem; }
-    .steps {
-      display:flex;
-      flex-wrap:wrap;
-      justify-content:center;
-      gap:1rem;
-    }
-    .step-card {
-      background: var(--light);
-      flex:1;
-      min-width:200px;
-      padding:1.5rem;
-      border-radius: var(--radius);
-    }
-    .step-card h4 { margin-bottom:.5rem; }
+    /* Hero Section */
+    #hero{min-height:80vh;background:url('assets/hero.jpg')center/cover fixed;display:flex;align-items:center;justify-content:center;position:relative;color:var(--light);text-align:center;padding: 2rem 1rem;} /* padding añadido y min-height */
+    #hero::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,.4);}
+    #hero .content{position:relative;z-index:1;}
+    #hero h1{font-family:var(--font-heading);font-size:clamp(2.5rem,6vw,4rem);margin-bottom:1rem;}
+    #hero p{font-size:1.2rem;margin-bottom:2rem;}
 
-    /* Planes y Precios */
-    #plans { margin-bottom:4rem; }
-    .plans-table {
-      width:100%;
-      border-collapse: collapse;
-      margin-bottom:1rem;
-    }
-    .plans-table th, .plans-table td {
-      border:1px solid #ddd;
-      padding:.75rem;
-      text-align:center;
-    }
-    .plans-table th {
-      background: var(--yellow);
-      font-family: var(--font-heading);
-    }
+    /* Utility Classes */
+    .container{max-width:1200px;margin:0 auto;padding:0 1rem;}
+    .btn{display:inline-block;font-weight:600;padding:.75rem 1.5rem;border-radius:var(--radius);transition:transform var(--transition),background var(--transition);cursor:pointer;text-align:center;}
+    .btn-primary{background:var(--green);color:var(--dark);} /* Color de texto cambiado para contraste */
+    .btn-secondary{background:transparent;border:2px solid var(--green);color:var(--green);}
+    .btn:hover{transform:scale(1.05);}
 
-    /* Testimonios */
-    #testimonials { text-align:center; margin-bottom:4rem; }
-    .testimonials-grid {
-      display:grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
-      gap:1.5rem;
-    }
-    .testimonial {
-      background: var(--light);
-      padding:1.5rem;
-      border-radius: var(--radius);
-    }
-    .testimonial img {
-      width:60px;
-      height:60px;
-      border-radius:50%;
-      margin-bottom:.75rem;
-    }
-    .testimonial h4 { margin-top:.5rem; }
+    /* General Section Styling */
+    section{padding:4rem 1rem;} /* Padding horizontal añadido */
+    h2{font-family:var(--font-heading);text-align:center;margin-bottom:2rem;font-size:clamp(1.8rem, 4vw, 2.5rem);} /* Tamaño de fuente responsivo */
 
-    /* Partners */
-    #partners { margin-bottom:4rem; overflow-x:auto; }
-    .partners-carousel {
-      display:flex;
-      gap:2rem;
-      scroll-snap-type: x mandatory;
-    }
-    .partner {
-      flex:0 0 auto;
-      scroll-snap-align: start;
-      text-align:center;
-    }
-    .partner img {
-      max-height:60px;
-      margin-bottom:.5rem;
-    }
+    /* Animation: Reveal on Scroll */
+    .reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease-out,transform .6s ease-out;}
+    .reveal.visible{opacity:1;transform:none;}
 
-    /* FAQ */
-    #faq { margin-bottom:4rem; }
-    .faq-item { border-bottom:1px solid #ddd; }
-    .faq-question {
-      width:100%;
-      padding:1rem;
-      background: var(--light);
-      border:none;
-      text-align:left;
-      font-family: var(--font-heading);
-      cursor:pointer;
-      position: relative;
-    }
-    .faq-question::after {
-      content:'+';
-      position:absolute;
-      right:1rem;
-      top:50%;
-      transform:translateY(-50%);
-      transition: transform .3s;
-    }
-    .faq-item.active .faq-question::after {
-      transform: translateY(-50%) rotate(45deg);
-    }
-    .faq-answer {
-      max-height:0;
-      overflow:hidden;
-      transition: max-height .3s;
-      padding:0 1rem;
-    }
-    .faq-item.active .faq-answer {
-      max-height:200px; /* suficiente para un párrafo */
-      padding:1rem;
-    }
+    /* Benefits Section */
+    #benefits .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:2rem;}
+    .benefit-card{background:var(--gray);padding:2rem;border-radius:var(--radius);text-align:center;transition:transform var(--transition);}
+    .benefit-card:hover{transform:translateY(-5px);}
+    .benefit-card span{font-size:2.5rem;margin-bottom:.5rem;display:block;} /* display:block para emojis */
 
-    /* CTA Final */
-    #cta-final {
-      text-align:center;
-      padding:2rem 1rem;
-      background: var(--green);
-      color: var(--light);
-      border-radius: var(--radius);
-      margin-bottom:4rem;
-    }
-    #cta-final h2 {
-      font-family: var(--font-heading);
-      margin-bottom:1rem;
-    }
+    /* How it works Section */
+    #how-it-works ol{list-style:none;display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;counter-reset:step;}
+    #how-it-works li{background:var(--gray);flex:1;min-width:200px;padding:2rem;border-radius:var(--radius);position:relative;counter-increment:step;}
+    #how-it-works li::before{content:counter(step);position:absolute;top:-1.5rem;left:-1.5rem;width:2.5rem;height:2.5rem;background:var(--green);color:var(--light);display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:600;}
+
+    /* Plans Section */
+    .table-responsive{overflow-x:auto;margin-bottom:2rem;}
+    .plans-table{width:100%;border-collapse:collapse;text-align:center;}
+    .plans-table th,.plans-table td{border:1px solid #ddd;padding:1rem;}
+    .plans-table th{background:var(--yellow);font-family:var(--font-heading);}
+
+    /* Carousel (Testimonials) */
+    .swiper{width:100%;padding:2rem 0;}
+    .swiper-slide{background:var(--gray);padding:2rem;border-radius:var(--radius);display:flex;flex-direction:column;align-items:center; text-align:center;}
+
+    /* Blog Section */
+    #blog .posts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2rem;}
+    .post-card{background:var(--gray);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;}
+    .post-card img{width:100%;height:160px;object-fit:cover;}
+    .post-card .post-content{padding:1rem;flex:1;display:flex;flex-direction:column;}
+    .post-card h3{margin-bottom:.5rem;font-family:var(--font-heading);}
+    .post-card p{flex:1;margin-bottom:1rem;}
+    .post-card a{align-self:flex-start;color:var(--green);font-weight:600;}
+
+    /* Newsletter Section */
+    #newsletter form{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;align-items:center;}
+    #newsletter input[type=email]{padding:.75rem;border:1px solid #ccc;border-radius:var(--radius);flex:1;min-width:250px;}
+
+    /* Contact Form Section */
+    #contact form{display:flex;flex-direction:column;gap:1rem;max-width:600px; margin:0 auto;}
+    #contact input,#contact textarea{padding:.75rem;border:1px solid #ccc;border-radius:var(--radius);transition:border var(--transition);font-family:var(--font-body);font-size:1rem;}
+    #contact input:focus,#contact textarea:focus{border-color:var(--green);outline:none;}
+
+    /* Custom Experience Form Section */
+    #custom-experience form {display:flex;flex-direction:column;gap:1.5rem;max-width:800px;margin:0 auto;}
+    #custom-experience .form-grid {display:grid;grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));gap:1rem;}
+    #custom-experience label {display:block;margin-bottom:.5rem;font-weight:600;color:var(--text);}
+    #custom-experience input[type="text"],
+    #custom-experience input[type="email"],
+    #custom-experience input[type="tel"],
+    #custom-experience input[type="number"],
+    #custom-experience select,
+    #custom-experience textarea {
+        width:100%;padding:.75rem;border:1px solid #ccc;border-radius:var(--radius);transition:border var(--transition);font-family:var(--font-body);font-size:1rem;background-color: var(--bg); color: var(--text);}
+    #custom-experience input:focus,
+    #custom-experience select:focus,
+    #custom-experience textarea:focus {border-color:var(--green);outline:none;}
+    #custom-experience button[type="submit"] {align-self:center;margin-top:1rem;}
+    #custom-experience p.form-instructions {text-align:center; margin-bottom: 2rem; font-size: 1.1rem;}
+
+
+    /* Map Section (CSS only, no HTML in current structure) */
+    #map iframe{width:100%;height:300px;border:0;border-radius:var(--radius);margin-bottom:2rem;}
+
+    /* FAQ Section */
+    #faq .faq-item{border-bottom:1px solid #ddd;}
+    #faq .faq-item:last-child{border-bottom:none;}
+    .faq-question{width:100%;padding:1rem;background:transparent;border:none;text-align:left;cursor:pointer;position:relative;font-weight:600;font-size:1.1rem;color:var(--text);}
+    .faq-question::after{content:'+';position:absolute;right:1rem;top:50%;transform:translateY(-50%);transition:transform .3s;font-size:1.5rem;color:var(--green);}
+    .faq-item.active .faq-question::after{transform:translateY(-50%) rotate(45deg);}
+    .faq-answer{max-height:0;overflow:hidden;transition:max-height .3s ease-in-out;padding:0 1rem;}
+    .faq-item.active .faq-answer{max-height:200px;padding:1rem;} /* Max-height aumentado */
+    .faq-answer p {margin-bottom: 0;}
+
+    /* Cookies Banner */
+    #cookie-banner{position:fixed;bottom:0;width:100%;background:var(--gray);padding:1rem;display:flex;justify-content:space-between;align-items:center;transform:translateY(100%);transition:transform .5s;z-index:2000;}
+    #cookie-banner.visible{transform:translateY(0);}
+    #cookie-banner span {margin-right: 1rem;}
 
     /* Footer */
-    footer {
-      text-align:center;
-      font-size:.9rem;
-      color:#666;
-      padding:2rem 1rem;
-      background:#f4f4f4;
-    }
-    footer .social-icons a {
-      margin:0 .5rem;
-      font-size:1.5rem;
-      transition: transform .2s;
-    }
-    footer .social-icons a:hover { transform: scale(1.1); }
+    footer{text-align:center;font-size:.9rem;color:#666;background:#f4f4f4;padding:2rem 1rem;}
+    [data-theme='dark'] footer {background: #1a1a1a; color: #aaa;}
+    [data-theme='dark'] footer a {color: var(--yellow);}
 
-    /* Popup descuento */
-    #discount-popup {
-      position:fixed;
-      top:50%; left:50%;
-      transform: translate(-50%, -50%);
-      background: var(--light);
-      padding:2rem;
-      border-radius: var(--radius);
-      box-shadow:0 4px 10px rgba(0,0,0,0.2);
-      display:none;
-      z-index:1000;
-      max-width:90%;
-      text-align:center;
-    }
-    #discount-popup button {
-      margin-top:1rem;
-    }
 
-    @media (max-width:600px) {
-      #hero h1 { font-size:2rem; }
-      .steps { flex-direction:column; }
+    @media(max-width:600px){
+      #hero{min-height:70vh;} /* Ajustado para móviles */
+      #hero h1{font-size:2rem;}
+      #hero p{font-size:1rem;}
+      section{padding:3rem 1rem;}
+      #custom-experience .form-grid {grid-template-columns:1fr;} /* Una columna en móviles para el form de experiencias */
+      #cookie-banner { flex-direction: column; gap: 0.5rem; text-align: center;}
     }
   </style>
 </head>
+<body data-theme="light">
+  <a href="#main-content" class="skip-link">Saltar al contenido</a>
+  <div id="progress" aria-hidden="true"></div>
+  <button id="theme-toggle" aria-label="Alternar tema oscuro/claro">🌙</button>
 
-<body>
-  <!-- Hero -->
-  <header id="hero">
-    <h1>Tu amigo local en México 🍌🤝</h1>
-    <p>Tu pase directo a experiencias únicas. Chatea ya en WhatsApp.</p>
-    <a href="https://wa.me/525543800343" target="_blank" class="btn-primary">
-      Chatea ya en WhatsApp
-    </a>
-  </header>
-
-  <main>
-    <!-- Beneficios -->
-    <section id="benefits">
-      <h2>¿Por qué elegir BananaPass?</h2>
-      <div class="grid">
-        <div class="benefit-card">
-          <span>⏰</span>
-          <h3>Acompañamiento 24/7</h3>
-          <p>Siempre hay un concierge listo para ayudarte.</p>
-        </div>
-        <div class="benefit-card">
-          <span>🌟</span>
-          <h3>Experiencias únicas</h3>
-          <p>Accede a actividades que nadie más ofrece.</p>
-        </div>
-        <div class="benefit-card">
-          <span>😌</span>
-          <h3>Sin estrés</h3>
-          <p>Tú relájate, nosotros nos encargamos de todo.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Cómo funciona -->
-    <section id="how-it-works">
-      <h2>¿Cómo funciona?</h2>
-      <div class="steps">
-        <div class="step-card">
-          <h4>Paso 1</h4>
-          <p>Chatea con nosotros por WhatsApp.</p>
-        </div>
-        <div class="step-card">
-          <h4>Paso 2</h4>
-          <p>Personaliza tu itinerario.</p>
-        </div>
-        <div class="step-card">
-          <h4>Paso 3</h4>
-          <p>Reservamos todo por ti.</p>
-        </div>
-        <div class="step-card">
-          <h4>Paso 4</h4>
-          <p>¡Disfruta sin preocupaciones!</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Planes y Precios -->
-    <section id="plans">
-      <h2>Nuestros Planes</h2>
-      <table class="plans-table">
-        <thead>
-          <tr>
-            <th>Características</th>
-            <th>Básico<br><small>USD 150 / 14 días</small></th>
-            <th>Premium<br><small>USD 300 / 14 días</small></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Itinerarios a medida</td>
-            <td>✔️</td>
-            <td>✔️</td>
-          </tr>
-          <tr>
-            <td>Reservas VIP</td>
-            <td>❌</td>
-            <td>✔️</td>
-          </tr>
-          <tr>
-            <td>Soporte 24/7</td>
-            <td>✔️</td>
-            <td>✔️</td>
-          </tr>
-          <tr>
-            <td>Acceso a promociones</td>
-            <td>✔️</td>
-            <td>✔️ + exclusivas</td>
-          </tr>
-        </tbody>
-      </table>
-      <div style="text-align:center;">
-        <a href="#" class="btn-primary">Elegir Básico</a>
-        <a href="#" class="btn-primary">Elegir Premium</a>
-      </div>
-    </section>
-
-    <!-- Testimonios -->
-    <section id="testimonials">
-      <h2>Lo que dicen nuestros clientes</h2>
-      <div class="testimonials-grid">
-        <div class="testimonial">
-          <img src="assets/testi1.jpg" alt="Foto de Ana">
-          <p>"BananaPass me salvó el viaje: todo fue perfecto."</p>
-          <h4>Ana Pérez <span>🇲🇽</span></h4>
-        </div>
-        <div class="testimonial">
-          <img src="assets/testi2.jpg" alt="Foto de John">
-          <p>"Reservas VIP y atención en minutos. ¡Increíble!"</p>
-          <h4>John Smith <span>🇺🇸</span></h4>
-        </div>
-      </div>
-    </section>
-
-    <!-- Partners Destacados -->
-    <section id="partners">
-      <h2>Partners Destacados</h2>
-      <div class="partners-carousel">
-        <div class="partner">
-          <img src="assets/logo1.png" alt="Logo Café Amigo">
-          <p>10% off en Café Amigo</p>
-        </div>
-        <div class="partner">
-          <img src="assets/logo2.png" alt="Logo TourMX">
-          <p>Acceso prioritario a TourMX</p>
-        </div>
-        <div class="partner">
-          <img src="assets/logo3.png" alt="Logo PlazaVIP">
-          <p>Entrada gratis a PlazaVIP</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- FAQ -->
-    <section id="faq">
-      <h2>Preguntas Frecuentes</h2>
-      <div class="faq-item">
-        <button class="faq-question">¿Cómo reservo con BananaPass?</button>
-        <div class="faq-answer"><p>Solo chatea con nosotros y te guiamos paso a paso.</p></div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-question">¿Puedo cancelar mi plan?</button>
-        <div class="faq-answer"><p>Sí, cancelas en cualquier momento sin penalización.</p></div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-question">¿Qué métodos de pago aceptan?</button>
-        <div class="faq-answer"><p>Tarjetas de crédito, débito y PayPal.</p></div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-question">¿Incluye propinas?</button>
-        <div class="faq-answer"><p>No, las propinas quedan a tu discreción.</p></div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-question">¿Hay plan familiar?</button>
-        <div class="faq-answer"><p>Pronto lanzaremos planes para grupos y familias.</p></div>
-      </div>
-    </section>
-
-    <!-- CTA Final -->
-    <section id="cta-final">
-      <h2>¿Listo para olvidarte del estrés?</h2>
-      <a href="https://wa.me/525543800343" target="_blank" class="btn-primary">
-        Chatea ahora
+  <nav id="navbar" aria-label="Barra de navegación principal">
+    <div class="nav-container">
+      <a href="#hero" class="logo" aria-label="BananaPass Inicio">
+        <img src="https://bananapass.com/logo.png" alt="BananaPass Logo">
       </a>
+      <div class="nav-links">
+        <a href="#benefits">Beneficios</a>
+        <a href="#how-it-works">Cómo Funciona</a>
+        <a href="#custom-experience">Diseña tu Viaje</a>
+        <a href="#plans">Planes</a>
+        <a href="#testimonials">Testimonios</a>
+        <a href="#blog">Blog</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contact">Contacto</a>
+      </div>
+      <div class="nav-cta"><a href="https://wa.me/525543800343" class="btn btn-primary" aria-label="Chatear en WhatsApp con BananaPass" target="_blank" rel="noopener noreferrer">Chat</a></div>
+    </div>
+  </nav>
+
+  <main id="main-content">
+    <header id="hero">
+      <div class="content reveal">
+        <h1>Tu amigo local en México 🍌🤝</h1>
+        <p>Tu pase directo a experiencias únicas. Chatea ya en WhatsApp.</p>
+        <a href="https://wa.me/525543800343" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Chatea ya en WhatsApp</a>
+      </div>
+    </header>
+
+    <section id="benefits" class="reveal">
+      <div class="container">
+        <h2>¿Por qué elegir BananaPass?</h2>
+        <div class="grid">
+          <div class="benefit-card reveal"><span aria-hidden="true">⏰</span><h3>Acompañamiento 24/7</h3><p>Siempre hay un concierge listo para ayudarte.</p></div>
+          <div class="benefit-card reveal"><span aria-hidden="true">🌟</span><h3>Experiencias únicas</h3><p>Accede a actividades que nadie más ofrece.</p></div>
+          <div class="benefit-card reveal"><span aria-hidden="true">😌</span><h3>Sin estrés</h3><p>Tú relájate, nosotros nos encargamos de todo.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="how-it-works" class="reveal">
+      <div class="container">
+        <h2>¿Cómo funciona?</h2>
+        <ol>
+          <li class="reveal"><h4>Chatea con nosotros</h4><p>Inicia la conversación en WhatsApp.</p></li>
+          <li class="reveal"><h4>Personaliza tu itinerario</h4><p>Cuéntanos tus ideas y preferencias.</p></li>
+          <li class="reveal"><h4>Reservamos por ti</h4><p>Nos encargamos de todos los detalles.</p></li>
+          <li class="reveal"><h4>¡Disfruta!</h4><p>Vive una experiencia inolvidable.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="custom-experience" class="reveal">
+        <div class="container">
+            <h2>Diseña tu Experiencia Única</h2>
+            <p class="form-instructions">Cuéntanos qué tienes en mente y crearemos un viaje inolvidable para ti en México.</p>
+            <form id="experience-form" novalidate>
+                <div class="form-grid">
+                    <div>
+                        <label for="exp-name">Nombre Completo:</label>
+                        <input type="text" id="exp-name" name="name" placeholder="Tu nombre completo" required aria-required="true">
+                    </div>
+                    <div>
+                        <label for="exp-email">Correo Electrónico:</label>
+                        <input type="email" id="exp-email" name="email" placeholder="Tu email de contacto" required aria-required="true">
+                    </div>
+                    <div>
+                        <label for="exp-phone">Teléfono (Opcional con WhatsApp):</label>
+                        <input type="tel" id="exp-phone" name="phone" placeholder="+52 55 1234 5678">
+                    </div>
+                    <div>
+                        <label for="exp-destination">Destino(s) de Interés en México:</label>
+                        <input type="text" id="exp-destination" name="destination" placeholder="Ej: Riviera Maya, CDMX, Oaxaca" required aria-required="true">
+                    </div>
+                    <div>
+                        <label for="exp-travelers">Número de Viajeros:</label>
+                        <input type="number" id="exp-travelers" name="travelers" min="1" value="1" placeholder="1" required aria-required="true">
+                    </div>
+                    <div>
+                        <label for="exp-dates">Fechas Estimadas de Viaje:</label>
+                        <input type="text" id="exp-dates" name="dates" placeholder="Ej: Marzo 2026, Fin de semana largo de Noviembre">
+                    </div>
+                </div>
+                <div>
+                    <label for="exp-type">Tipo de Experiencia Principal:</label>
+                    <select id="exp-type" name="experience_type" required aria-required="true">
+                        <option value="" disabled selected>Selecciona una opción...</option>
+                        <option value="aventura">Aventura y Naturaleza (ej. selva, cenotes, montañas)</option>
+                        <option value="cultural">Cultural y Gastronómica (ej. ruinas, museos, tours de comida)</option>
+                        <option value="relax">Relax y Bienestar (ej. spa, yoga, playas tranquilas)</option>
+                        <option value="romantica">Romántica (ej. cenas especiales, hoteles boutique)</option>
+                        <option value="lujo">Lujo y Exclusividad (ej. yates, villas privadas, chefs)</option>
+                        <option value="eventos">Eventos Especiales (ej. bodas, festivales, conciertos)</option>
+                        <option value="otra">Otra (describe abajo)</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="exp-details">Cuéntanos más sobre tu experiencia ideal:</label>
+                    <textarea id="exp-details" name="details" rows="5" placeholder="Describe qué te gustaría hacer, ver, tus intereses especiales, presupuesto aproximado (opcional), o cualquier otro detalle importante..." required aria-required="true"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Solicitar Cotización de Experiencia</button>
+                <p id="exp-form-status" style="color:var(--green);display:none;margin-top:1rem;text-align:center;">¡Solicitud enviada! Te contactaremos pronto para diseñar tu aventura.</p>
+            </form>
+        </div>
+    </section>
+
+    <section id="plans" class="reveal">
+      <div class="container">
+        <h2>Nuestros Planes</h2>
+        <div class="table-responsive"><table class="plans-table"><thead><tr><th>Característica</th><th>Básico<br><small>USD 150/14d</small></th><th>Premium<br><small>USD 300/14d</small></th></tr></thead><tbody><tr><td>Itinerarios a medida</td><td>✔️</td><td>✔️</td></tr><tr><td>Reservas VIP</td><td>❌</td><td>✔️</td></tr><tr><td>Soporte 24/7 por WhatsApp</td><td>✔️</td><td>✔️</td></tr><tr><td>Promociones</td><td>✔️</td><td>✔️ + exclusivas</td></tr></tbody></table></div>
+        <div style="text-align:center; display:flex; justify-content:center; gap:1rem; flex-wrap:wrap;">
+            <a class="btn btn-secondary" href="https://wa.me/525543800343?text=Hola,%20me%20interesa%20el%20plan%20Básico" target="_blank" rel="noopener noreferrer">Elegir Básico</a>
+            <a class="btn btn-primary" href="https://wa.me/525543800343?text=Hola,%20me%20interesa%20el%20plan%20Premium" target="_blank" rel="noopener noreferrer">Elegir Premium</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="testimonials" class="reveal">
+      <div class="container">
+        <h2>Testimonios</h2>
+        <div class="swiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide"><blockquote>"BananaPass me salvó el viaje: todo fue perfecto. La atención personalizada es de otro nivel."</blockquote><p><strong>Ana Pérez</strong></p></div>
+                <div class="swiper-slide"><blockquote>"Reservas VIP y atención en minutos. ¡Increíble! Consiguieron lugares que estaban 'agotados'."</blockquote><p><strong>John Smith</strong></p></div>
+                <div class="swiper-slide"><blockquote>"El mejor concierge para México. Conocen todos los secretos locales. Súper recomendado."</blockquote><p><strong>Lucía Méndez</strong></p></div>
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="blog" class="reveal">
+      <div class="container">
+        <h2>Desde nuestro Blog</h2>
+        <div class="posts-grid" id="posts-grid">
+          </div>
+        <div style="text-align:center;margin-top:2rem;"><a href="/blog" class="btn btn-primary">Ver blog completo</a></div>
+      </div>
+    </section>
+
+    <section id="newsletter" class="reveal" style="background-color: var(--gray); padding: 3rem 1rem;">
+        <div class="container">
+            <h2 style="margin-bottom: 1rem;">Únete a nuestra Newsletter</h2>
+            <p style="text-align:center; margin-bottom: 1.5rem;">Recibe tips de viaje exclusivos, ofertas y las últimas novedades sobre experiencias en México.</p>
+            <form id="newsletter-form">
+                <label for="newsletter-email" class="sr-only">Tu correo electrónico</label>
+                <input type="email" id="newsletter-email" name="email" placeholder="Tu email" required aria-required="true" aria-label="Correo electrónico para newsletter">
+                <button class="btn btn-primary" type="submit">Suscribirme</button>
+            </form>
+            <p id="newsletter-status" style="color:var(--green);display:none;margin-top:1rem;text-align:center;">¡Gracias por suscribirte!</p>
+        </div>
+    </section>
+
+    <section id="faq" class="reveal">
+      <div class="container">
+        <h2>Preguntas Frecuentes</h2>
+        <div class="faq-item">
+            <button class="faq-question" aria-expanded="false" aria-controls="faq1-answer">¿Cómo puedo reservar una experiencia o plan?</button>
+            <div class="faq-answer" id="faq1-answer"><p>¡Es muy fácil! Simplemente inicia una conversación con nosotros por WhatsApp a través de cualquiera de los botones de "Chat" o "Elegir Plan" en la página. También puedes usar el formulario "Diseña tu Experiencia" y nos pondremos en contacto contigo.</p></div>
+        </div>
+        <div class="faq-item">
+            <button class="faq-question" aria-expanded="false" aria-controls="faq2-answer">¿Qué tipo de experiencias ofrecen?</button>
+            <div class="faq-answer" id="faq2-answer"><p>Ofrecemos una amplia gama de experiencias: desde aventuras en la naturaleza, tours culturales y gastronómicos, hasta momentos de relax y bienestar, escapadas románticas y acceso a eventos exclusivos. Si tienes algo específico en mente, ¡dínoslo! Nos encanta crear itinerarios 100% personalizados.</p></div>
+        </div>
+        <div class="faq-item">
+            <button class="faq-question" aria-expanded="false" aria-controls="faq3-answer">¿En qué destinos de México operan?</button>
+            <div class="faq-answer" id="faq3-answer"><p>Operamos en todo México. Tenemos contactos y conocimiento local en los principales destinos turísticos como Cancún, Riviera Maya, Ciudad de México, Los Cabos, Puerto Vallarta, San Miguel de Allende, Oaxaca, y muchos más, incluyendo joyas ocultas.</p></div>
+        </div>
+         <div class="faq-item">
+            <button class="faq-question" aria-expanded="false" aria-controls="faq4-answer">¿El costo de las actividades está incluido en los planes?</button>
+            <div class="faq-answer" id="faq4-answer"><p>Nuestros planes (Básico y Premium) cubren el servicio de concierge: planificación de itinerarios, recomendaciones, reservas y soporte 24/7. Los costos de las actividades, tours, alojamiento, transporte, etc., son aparte y se cotizan según tus selecciones. Te ayudamos a conseguir las mejores tarifas y opciones.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="reveal">
+      <div class="container">
+        <h2>Contáctanos</h2>
+        <form id="contact-form" novalidate>
+          <label for="name" class="sr-only">Nombre</label>
+          <input type="text" id="name" name="name" placeholder="Tu nombre" required aria-required="true">
+          <label for="email" class="sr-only">Email</label>
+          <input type="email" id="email" name="email" placeholder="Tu email" required aria-required="true">
+          <label for="message" class="sr-only">Mensaje</label>
+          <textarea id="message" name="message" rows="5" placeholder="Tu mensaje" required aria-required="true"></textarea>
+          <button type="submit" class="btn btn-primary">Enviar Mensaje</button>
+          <p id="form-status" style="color:var(--green);display:none;margin-top:1rem;text-align:center;">¡Mensaje enviado! Te responderemos pronto.</p>
+        </form>
+      </div>
     </section>
   </main>
 
-  <!-- Footer -->
+  <div id="cookie-banner">
+    <span>Usamos cookies para mejorar tu experiencia en BananaPass. Al continuar navegando, aceptas su uso.</span>
+    <button id="accept-cookie" class="btn btn-primary">Aceptar</button>
+  </div>
+
   <footer>
-    <p>&copy; 2025 BananaPass. Todos los derechos reservados.</p>
-    <p>
-      <a href="#">Política de privacidad</a> |
-      <a href="#">Términos y condiciones</a>
-    </p>
-    <div class="social-icons">
-      <a href="#" aria-label="Twitter">🐦</a>
-      <a href="#" aria-label="Facebook">📘</a>
-      <a href="#" aria-label="Instagram">📸</a>
+    <div class="container">
+      <p>&copy; <span id="current-year">2025</span> BananaPass. Todos los derechos reservados.</p>
+      <p><a href="/politica-de-privacidad">Política de privacidad</a> | <a href="/terminos-y-condiciones">Términos y Condiciones</a></p>
     </div>
   </footer>
 
-  <!-- Popup Descuento -->
-  <div id="discount-popup">
-    <p>🎉 ¡10% de descuento con el código <strong>BANANA10</strong>!</p>
-    <button class="btn-primary" onclick="closePopup()">Cerrar</button>
-  </div>
+  <script src="https://unpkg.com/swiper@8/swiper-bundle.min.js" defer></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script> <script defer>
+    // Google Analytics
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXX'); // REEMPLAZA G-XXXXXXX
 
-  <script>
-    // FAQ accordion
-    document.querySelectorAll('.faq-question').forEach(btn => {
-      btn.addEventListener('click', () => {
-        btn.parentElement.classList.toggle('active');
-      });
+    // Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .then(registration => console.log('Service Worker registrado con éxito:', registration))
+        .catch(error => console.log('Error al registrar Service Worker:', error));
+    }
+
+    // Scroll Progress Bar
+    const progress = document.getElementById('progress');
+    if (progress) {
+        window.addEventListener('scroll', () => {
+            const scroll = document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            progress.style.width = height ? (scroll / height) * 100 + '%' : '0';
+        });
+    }
+
+    // Reveal on scroll
+    const revealElements = document.querySelectorAll('.reveal');
+    if (revealElements.length > 0) {
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        revealElements.forEach(el => observer.observe(el));
+    }
+
+    // Swiper Carousel
+    if (typeof Swiper !== 'undefined') {
+        new Swiper('.swiper', {
+            loop: true,
+            slidesPerView: 1,
+            spaceBetween: 20,
+            pagination: { el: '.swiper-pagination', clickable: true },
+            autoplay: { delay: 5000, disableOnInteraction: false, },
+            breakpoints: {
+                768: { slidesPerView: 2, spaceBetween: 30, }
+            }
+        });
+    }
+
+    // Theme Toggle
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const rootHtml = document.documentElement;
+    if (themeToggleBtn && rootHtml) {
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            rootHtml.setAttribute('data-theme', savedTheme);
+            themeToggleBtn.textContent = savedTheme === 'light' ? '🌙' : '☀️';
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            const currentTheme = rootHtml.getAttribute('data-theme');
+            const nextTheme = currentTheme === 'light' ? 'dark' : 'light';
+            rootHtml.setAttribute('data-theme', nextTheme);
+            themeToggleBtn.textContent = nextTheme === 'light' ? '🌙' : '☀️';
+            localStorage.setItem('theme', nextTheme); // Save preference
+        });
+    }
+
+    // Smooth Scroll for nav links
+    document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                targetElement.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
     });
 
-    // Popup a los 10s
-    function showPopup() {
-      document.getElementById('discount-popup').style.display = 'block';
+    // Cookie Banner
+    const cookieBanner = document.getElementById('cookie-banner');
+    const acceptCookieBtn = document.getElementById('accept-cookie');
+    if (cookieBanner && acceptCookieBtn) {
+        if (!localStorage.getItem('cookieConsent')) {
+            cookieBanner.classList.add('visible');
+        }
+        acceptCookieBtn.addEventListener('click', () => {
+            localStorage.setItem('cookieConsent', 'true');
+            cookieBanner.classList.remove('visible');
+        });
     }
-    function closePopup() {
-      document.getElementById('discount-popup').style.display = 'none';
+
+    // Contact Form Submission
+    const contactForm = document.getElementById('contact-form');
+    if (contactForm) {
+        contactForm.addEventListener('submit', e => {
+            e.preventDefault();
+            // Aquí iría la lógica de envío real (AJAX, fetch a tu backend, etc.)
+            const formStatus = document.getElementById('form-status');
+            if (formStatus) {
+                formStatus.textContent = '¡Mensaje enviado! Te responderemos pronto.';
+                formStatus.style.display = 'block';
+                setTimeout(() => { formStatus.style.display = 'none'; }, 4000);
+            }
+            e.target.reset();
+        });
     }
-    setTimeout(showPopup, 10000);
+
+    // Custom Experience Form Submission
+    const experienceForm = document.getElementById('experience-form');
+    if (experienceForm) {
+        experienceForm.addEventListener('submit', e => {
+            e.preventDefault();
+            // Aquí iría la lógica de envío real
+            const expFormStatus = document.getElementById('exp-form-status');
+            if (expFormStatus) {
+                expFormStatus.textContent = '¡Solicitud enviada! Te contactaremos pronto para diseñar tu aventura.';
+                expFormStatus.style.display = 'block';
+                setTimeout(() => { expFormStatus.style.display = 'none'; }, 5000);
+            }
+            e.target.reset();
+        });
+    }
+    
+    // Newsletter Form Submission
+    const newsletterForm = document.getElementById('newsletter-form');
+    if (newsletterForm) {
+        newsletterForm.addEventListener('submit', e => {
+            e.preventDefault();
+            const newsletterStatus = document.getElementById('newsletter-status');
+            if (newsletterStatus) {
+                newsletterStatus.textContent = '¡Gracias por suscribirte!';
+                newsletterStatus.style.display = 'block';
+                setTimeout(() => { newsletterStatus.style.display = 'none'; }, 3000);
+            }
+            e.target.reset();
+        });
+    }
+
+    // Fetch blog posts (Placeholder - asegúrate que /api/posts existe o reemplaza con tu lógica)
+    const postsGrid = document.getElementById('posts-grid');
+    if (postsGrid) {
+        fetch('/api/posts?limit=3') // Ejemplo: Asume una API local
+            .then(res => {
+                if (!res.ok) throw new Error('Error al cargar posts del blog');
+                return res.json();
+            })
+            .then(posts => {
+                if (posts && posts.length > 0) {
+                    posts.forEach(p => {
+                        const card = document.createElement('div');
+                        card.className = 'post-card reveal'; // Agregamos reveal para la animación si es necesario
+                        card.innerHTML = `
+                          <img src="${p.image || 'assets/placeholder-post.jpg'}" alt="${p.title || 'Entrada de blog'}">
+                          <div class="post-content">
+                            <h3>${p.title || 'Título no disponible'}</h3>
+                            <p>${p.excerpt || 'Extracto no disponible.'}</p>
+                            <a href="/blog/${p.slug || '#'}" class="btn btn-secondary" style="align-self: flex-start; padding: 0.5rem 1rem;">Leer más</a>
+                          </div>`;
+                        postsGrid.appendChild(card);
+                    });
+                } else {
+                    postsGrid.innerHTML = '<p>No hay posts recientes en el blog.</p>';
+                }
+                 // Re-observar elementos si se añaden dinámicamente y se quiere la animación reveal
+                const newRevealElements = postsGrid.querySelectorAll('.reveal');
+                if (newRevealElements.length > 0 && typeof IntersectionObserver !== 'undefined') {
+                    const tempObserver = new IntersectionObserver(entries => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                entry.target.classList.add('visible');
+                                tempObserver.unobserve(entry.target);
+                            }
+                        });
+                    }, { threshold: 0.1 });
+                    newRevealElements.forEach(el => tempObserver.observe(el));
+                }
+            })
+            .catch(error => {
+                console.error('Error cargando posts del blog:', error);
+                postsGrid.innerHTML = '<p>No se pudieron cargar las entradas del blog. Intenta más tarde.</p>';
+            });
+    }
+
+    // FAQ Accordion
+    document.querySelectorAll('.faq-question').forEach(button => {
+        button.addEventListener('click', () => {
+            const faqItem = button.parentElement;
+            const answer = button.nextElementSibling;
+            const isExpanded = button.getAttribute('aria-expanded') === 'true';
+
+            // Opcional: cerrar otros items si se quiere que solo uno esté abierto
+            // document.querySelectorAll('.faq-item.active').forEach(openItem => {
+            //    if (openItem !== faqItem) {
+            //        openItem.classList.remove('active');
+            //        openItem.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+            //        openItem.querySelector('.faq-answer').style.maxHeight = null;
+            //    }
+            // });
+
+            faqItem.classList.toggle('active');
+            button.setAttribute('aria-expanded', !isExpanded);
+            if (!isExpanded) {
+                answer.style.maxHeight = answer.scrollHeight + "px";
+            } else {
+                answer.style.maxHeight = null;
+            }
+        });
+    });
+
+    // Update footer year
+    const currentYearSpan = document.getElementById('current-year');
+    if (currentYearSpan) {
+        currentYearSpan.textContent = new Date().getFullYear();
+    }
+
   </script>
 </body>
 </html>
