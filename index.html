@@ -37,6 +37,7 @@
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
     html{scroll-behavior:smooth;font-size:16px;}
     body{font-family:var(--font-body);background:var(--bg);color:var(--text);line-height:1.6;transition:background var(--transition),color var(--transition);}
+    body.no-scroll { overflow: hidden; }
     a{color:inherit;text-decoration:none;}
     img,video{max-width:100%;height:auto;display:block;}
 
@@ -49,22 +50,140 @@
     #progress{position:fixed;top:0;left:0;width:0;height:4px;background:var(--green);z-index:9999;transition:width .25s;}
 
     /* Navigation */
-    nav{background:rgba(255,255,255,.8);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);position:fixed;top:0;width:100%;z-index:1000;display:flex;justify-content:center;padding:.5rem 1rem;font-family:var(--font-body);}
+    nav{
+        background:rgba(255,255,255,.8);
+        -webkit-backdrop-filter:blur(10px);
+        backdrop-filter:blur(10px);
+        position:fixed;
+        top:0;
+        width:100%;
+        z-index:1000;
+        display:flex;
+        justify-content:center;
+        padding: 1rem 1.5rem; /* Aumentado padding */
+        font-family:var(--font-body);
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        align-items: center;
+    }
     [data-theme='dark'] nav{background:rgba(34,34,34,.8);}
-    .nav-container{max-width:1200px;width:100%;display:flex;justify-content:space-between;align-items:center;}
-    .nav-container .logo img { height: 30px; /* Ajusta la altura de tu logo */ vertical-align: middle; }
-    .nav-links{display:flex;gap:1rem;}
-    .nav-links a{font-weight:600;transition:color var(--transition);}
-    .nav-links a:hover{color:var(--green);}
-    .nav-cta a{padding:.5rem 1rem;background:var(--green);color:var(--dark);border-radius:var(--radius);} /* Color de texto cambiado para contraste */
-    @media(max-width:1023px){nav{display:none;}body{padding-top:0;}} /* Considerar menú hamburguesa para móvil */
+    nav.navbar-scrolled {
+        background-color: var(--bg);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    [data-theme='dark'] nav.navbar-scrolled {
+        background-color: var(--bg);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3); /* Sombra más visible en tema oscuro */
+    }
+
+    .nav-container{
+        max-width:1200px;
+        width:100%;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap: 1rem;
+    }
+    .nav-container .logo img { height: 35px; /* Ajusta la altura de tu logo */ vertical-align: middle; }
+
+    .nav-links{
+        display:flex;
+        gap: 1.5rem; /* Aumentado gap */
+        align-items: center;
+    }
+    .nav-links a{
+        font-weight:600;
+        transition:color var(--transition);
+        position: relative;
+        padding: 0.25rem 0;
+    }
+    .nav-links a::after { /* Efecto hover sutil */
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -2px; /* Un poco más abajo */
+        left: 0;
+        background-color: var(--green);
+        transition: width 0.3s ease;
+    }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-links a:hover{ color: var(--text); } /* Evita cambio de color si no es necesario */
+    [data-theme='dark'] .nav-links a:hover{ color: var(--light); }
+
+
+    .nav-cta a{padding:.5rem 1rem;background:var(--green);color:var(--dark);border-radius:var(--radius);}
+
+    /* Mobile Navigation Toggle */
+    .nav-toggle {
+        display: none; /* Oculto en desktop */
+        flex-direction: column;
+        justify-content: space-around;
+        width: 2rem; height: 2rem;
+        background: transparent; border: none; cursor: pointer; padding: 0; z-index: 1002; /* Encima del menú móvil */
+    }
+    .nav-toggle span {
+        width: 2rem; height: 0.25rem; background: var(--text); border-radius: 10px;
+        transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* Transición con rebote */
+        position: relative; transform-origin: 1px;
+    }
+    .nav-toggle.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .nav-toggle.active span:nth-child(2) { opacity: 0; transform: translateX(20px); }
+    .nav-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+    /* Mobile Navigation Links Panel */
+    .nav-links-mobile {
+        display: none; /* Oculto por defecto, gestionado por JS y @media */
+        flex-direction: column; align-items: center; justify-content: center;
+        position: fixed; top: 0; left: 0; width: 100%; height: 100vh; /* Fullscreen */
+        background: var(--bg);
+        transform: translateX(100%); /* Inicia fuera de la pantalla */
+        transition: transform 0.35s ease-in-out;
+        padding-top: 6rem; /* Espacio para la navbar fija */
+        gap: 1.5rem; /* Espacio entre enlaces */
+        z-index: 1001; /* Detrás del toggle, encima del contenido */
+    }
+    .nav-links-mobile.active {
+        transform: translateX(0);
+    }
+    .nav-links-mobile a {
+        font-size: 1.3rem; /* Más grande para móvil */
+        font-weight: 600;
+        color: var(--text);
+        padding: 0.75rem 1.5rem;
+        border-radius: var(--radius);
+        transition: background-color 0.2s ease, color 0.2s ease;
+    }
+    .nav-links-mobile a:hover {
+      background-color: var(--gray);
+    }
+    [data-theme='dark'] .nav-links-mobile a:hover {
+      background-color: var(--gray); /* --gray en dark es #333 */
+    }
+    .nav-links-mobile .btn-primary { /* Estilo para el CTA en el menú móvil */
+        padding: .75rem 1.5rem;
+        background: var(--green);
+        color: var(--dark) !important; /* Asegurar contraste, !important para sobreescribir hover si es necesario */
+    }
+     .nav-links-mobile .btn-primary:hover {
+        background-color: var(--green); /* Mantener el color verde del botón */
+        opacity: 0.9;
+    }
+
+
+    @media(max-width:1023px){
+        .nav-links { display: none; } /* Ocultar links de escritorio */
+        .nav-cta { display: none; } /* Ocultar CTA de escritorio (está en menú móvil) */
+        .nav-toggle { display: flex; } /* Mostrar hamburguesa */
+        .nav-links-mobile { display: flex; } /* Permitir que JS lo maneje, pero flex para contenido */
+    }
+
 
     /* UI Elements: Theme Toggle */
     #theme-toggle{position:fixed;top:1rem;right:1rem;background:var(--gray);border:none;padding:.5rem;border-radius:50%;cursor:pointer;z-index:1001;transition:background var(--transition);}
     #theme-toggle:hover{background:var(--yellow);}
 
     /* Hero Section */
-    #hero{min-height:80vh;background:url('assets/hero.jpg')center/cover fixed;display:flex;align-items:center;justify-content:center;position:relative;color:var(--light);text-align:center;padding: 2rem 1rem;} /* padding añadido y min-height */
+    #hero{min-height:80vh;background:url('assets/hero.jpg')center/cover fixed;display:flex;align-items:center;justify-content:center;position:relative;color:var(--light);text-align:center;padding: 2rem 1rem;}
     #hero::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,.4);}
     #hero .content{position:relative;z-index:1;}
     #hero h1{font-family:var(--font-heading);font-size:clamp(2.5rem,6vw,4rem);margin-bottom:1rem;}
@@ -73,13 +192,13 @@
     /* Utility Classes */
     .container{max-width:1200px;margin:0 auto;padding:0 1rem;}
     .btn{display:inline-block;font-weight:600;padding:.75rem 1.5rem;border-radius:var(--radius);transition:transform var(--transition),background var(--transition);cursor:pointer;text-align:center;}
-    .btn-primary{background:var(--green);color:var(--dark);} /* Color de texto cambiado para contraste */
+    .btn-primary{background:var(--green);color:var(--dark);}
     .btn-secondary{background:transparent;border:2px solid var(--green);color:var(--green);}
     .btn:hover{transform:scale(1.05);}
 
     /* General Section Styling */
-    section{padding:4rem 1rem;} /* Padding horizontal añadido */
-    h2{font-family:var(--font-heading);text-align:center;margin-bottom:2rem;font-size:clamp(1.8rem, 4vw, 2.5rem);} /* Tamaño de fuente responsivo */
+    section{padding:4rem 1rem;}
+    h2{font-family:var(--font-heading);text-align:center;margin-bottom:2rem;font-size:clamp(1.8rem, 4vw, 2.5rem);}
 
     /* Animation: Reveal on Scroll */
     .reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease-out,transform .6s ease-out;}
@@ -89,7 +208,7 @@
     #benefits .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:2rem;}
     .benefit-card{background:var(--gray);padding:2rem;border-radius:var(--radius);text-align:center;transition:transform var(--transition);}
     .benefit-card:hover{transform:translateY(-5px);}
-    .benefit-card span{font-size:2.5rem;margin-bottom:.5rem;display:block;} /* display:block para emojis */
+    .benefit-card span{font-size:2.5rem;margin-bottom:.5rem;display:block;}
 
     /* How it works Section */
     #how-it-works ol{list-style:none;display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;counter-reset:step;}
@@ -126,8 +245,13 @@
 
     /* Custom Experience Form Section */
     #custom-experience form {display:flex;flex-direction:column;gap:1.5rem;max-width:800px;margin:0 auto;}
-    #custom-experience .form-grid {display:grid;grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));gap:1rem;}
-    #custom-experience label {display:block;margin-bottom:.5rem;font-weight:600;color:var(--text);}
+    #custom-experience .form-grid {display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));gap:1.5rem;} /* minmax ajustado y gap */
+    #custom-experience .form-grid > div { /* Contenedor de label + input */
+        display: flex;
+        flex-direction: column; /* Etiqueta arriba, input abajo */
+        gap: 0.3rem; /* Pequeño espacio entre label e input */
+    }
+    #custom-experience label {display:block;margin-bottom:0;font-weight:600;color:var(--text);} /* Quitado margin-bottom, ahora usa gap del padre */
     #custom-experience input[type="text"],
     #custom-experience input[type="email"],
     #custom-experience input[type="tel"],
@@ -152,7 +276,7 @@
     .faq-question::after{content:'+';position:absolute;right:1rem;top:50%;transform:translateY(-50%);transition:transform .3s;font-size:1.5rem;color:var(--green);}
     .faq-item.active .faq-question::after{transform:translateY(-50%) rotate(45deg);}
     .faq-answer{max-height:0;overflow:hidden;transition:max-height .3s ease-in-out;padding:0 1rem;}
-    .faq-item.active .faq-answer{max-height:200px;padding:1rem;} /* Max-height aumentado */
+    .faq-item.active .faq-answer{max-height:250px;padding:1rem;} /* Max-height aumentado */
     .faq-answer p {margin-bottom: 0;}
 
     /* Cookies Banner */
@@ -167,11 +291,11 @@
 
 
     @media(max-width:600px){
-      #hero{min-height:70vh;} /* Ajustado para móviles */
+      #hero{min-height:70vh;}
       #hero h1{font-size:2rem;}
       #hero p{font-size:1rem;}
       section{padding:3rem 1rem;}
-      #custom-experience .form-grid {grid-template-columns:1fr;} /* Una columna en móviles para el form de experiencias */
+      #custom-experience .form-grid {grid-template-columns:1fr;}
       #cookie-banner { flex-direction: column; gap: 0.5rem; text-align: center;}
     }
   </style>
@@ -186,8 +310,7 @@
       <a href="#hero" class="logo" aria-label="BananaPass Inicio">
         <img src="https://bananapass.com/logo.png" alt="BananaPass Logo">
       </a>
-      <div class="nav-links">
-        <a href="#benefits">Beneficios</a>
+      <div class="nav-links"> <a href="#benefits">Beneficios</a>
         <a href="#how-it-works">Cómo Funciona</a>
         <a href="#custom-experience">Diseña tu Viaje</a>
         <a href="#plans">Planes</a>
@@ -196,7 +319,23 @@
         <a href="#faq">FAQ</a>
         <a href="#contact">Contacto</a>
       </div>
-      <div class="nav-cta"><a href="https://wa.me/525543800343" class="btn btn-primary" aria-label="Chatear en WhatsApp con BananaPass" target="_blank" rel="noopener noreferrer">Chat</a></div>
+      <div class="nav-cta"> <a href="https://wa.me/525543800343" class="btn btn-primary" aria-label="Chatear en WhatsApp con BananaPass" target="_blank" rel="noopener noreferrer">Chat</a>
+      </div>
+      <button class="nav-toggle" aria-label="Abrir menú de navegación" aria-expanded="false" aria-controls="nav-links-mobile">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div class="nav-links-mobile" id="nav-links-mobile"> <a href="#benefits">Beneficios</a>
+        <a href="#how-it-works">Cómo Funciona</a>
+        <a href="#custom-experience">Diseña tu Viaje</a>
+        <a href="#plans">Planes</a>
+        <a href="#testimonials">Testimonios</a>
+        <a href="#blog">Blog</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contact">Contacto</a>
+        <a href="https://wa.me/525543800343" class="btn btn-primary" aria-label="Chatear en WhatsApp con BananaPass" target="_blank" rel="noopener noreferrer">Chat WhatsApp</a>
     </div>
   </nav>
 
@@ -247,8 +386,7 @@
                         <input type="email" id="exp-email" name="email" placeholder="Tu email de contacto" required aria-required="true">
                     </div>
                     <div>
-                        <label for="exp-phone">Teléfono (Opcional con WhatsApp):</label>
-                        <input type="tel" id="exp-phone" name="phone" placeholder="+52 55 1234 5678">
+                        <label for="exp-phone">Teléfono/WhatsApp (Opcional):</label> <input type="tel" id="exp-phone" name="phone" placeholder="+52 55 1234 5678">
                     </div>
                     <div>
                         <label for="exp-destination">Destino(s) de Interés en México:</label>
@@ -408,6 +546,40 @@
             progress.style.width = height ? (scroll / height) * 100 + '%' : '0';
         });
     }
+    
+    // Navbar scroll effect
+    const nav = document.getElementById('navbar');
+    if (nav) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                nav.classList.add('navbar-scrolled');
+            } else {
+                nav.classList.remove('navbar-scrolled');
+            }
+        });
+    }
+
+    // Mobile Nav Toggle
+    const navToggle = document.querySelector('.nav-toggle');
+    const mobileNavLinks = document.querySelector('.nav-links-mobile');
+    if (navToggle && mobileNavLinks) {
+        navToggle.addEventListener('click', () => {
+            const isActive = navToggle.classList.toggle('active');
+            mobileNavLinks.classList.toggle('active');
+            navToggle.setAttribute('aria-expanded', isActive);
+            document.body.classList.toggle('no-scroll', isActive);
+        });
+        // Cerrar menú al hacer clic en un enlace
+        mobileNavLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                navToggle.classList.remove('active');
+                mobileNavLinks.classList.remove('active');
+                navToggle.setAttribute('aria-expanded', 'false');
+                document.body.classList.remove('no-scroll');
+            });
+        });
+    }
+
 
     // Reveal on scroll
     const revealElements = document.querySelectorAll('.reveal');
@@ -441,24 +613,22 @@
     const themeToggleBtn = document.getElementById('theme-toggle');
     const rootHtml = document.documentElement;
     if (themeToggleBtn && rootHtml) {
-        // Check for saved theme preference
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme) {
             rootHtml.setAttribute('data-theme', savedTheme);
             themeToggleBtn.textContent = savedTheme === 'light' ? '🌙' : '☀️';
         }
-
         themeToggleBtn.addEventListener('click', () => {
-            const currentTheme = rootHtml.getAttribute('data-theme');
+            const currentTheme = rootHtml.getAttribute('data-theme') || 'light';
             const nextTheme = currentTheme === 'light' ? 'dark' : 'light';
             rootHtml.setAttribute('data-theme', nextTheme);
             themeToggleBtn.textContent = nextTheme === 'light' ? '🌙' : '☀️';
-            localStorage.setItem('theme', nextTheme); // Save preference
+            localStorage.setItem('theme', nextTheme);
         });
     }
 
-    // Smooth Scroll for nav links
-    document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
+    // Smooth Scroll for nav links (solo para los de la navbar principal, los del menú móvil ya se cierran)
+    document.querySelectorAll('#navbar .nav-container .nav-links a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
             const targetId = this.getAttribute('href');
@@ -487,7 +657,6 @@
     if (contactForm) {
         contactForm.addEventListener('submit', e => {
             e.preventDefault();
-            // Aquí iría la lógica de envío real (AJAX, fetch a tu backend, etc.)
             const formStatus = document.getElementById('form-status');
             if (formStatus) {
                 formStatus.textContent = '¡Mensaje enviado! Te responderemos pronto.';
@@ -503,7 +672,6 @@
     if (experienceForm) {
         experienceForm.addEventListener('submit', e => {
             e.preventDefault();
-            // Aquí iría la lógica de envío real
             const expFormStatus = document.getElementById('exp-form-status');
             if (expFormStatus) {
                 expFormStatus.textContent = '¡Solicitud enviada! Te contactaremos pronto para diseñar tu aventura.';
@@ -529,19 +697,20 @@
         });
     }
 
-    // Fetch blog posts (Placeholder - asegúrate que /api/posts existe o reemplaza con tu lógica)
+    // Fetch blog posts
     const postsGrid = document.getElementById('posts-grid');
     if (postsGrid) {
-        fetch('/api/posts?limit=3') // Ejemplo: Asume una API local
+        fetch('/api/posts?limit=3')
             .then(res => {
-                if (!res.ok) throw new Error('Error al cargar posts del blog');
+                if (!res.ok) throw new Error('Error al cargar posts del blog. Estado: ' + res.status);
                 return res.json();
             })
             .then(posts => {
                 if (posts && posts.length > 0) {
+                    postsGrid.innerHTML = ''; // Limpiar por si acaso
                     posts.forEach(p => {
                         const card = document.createElement('div');
-                        card.className = 'post-card reveal'; // Agregamos reveal para la animación si es necesario
+                        card.className = 'post-card reveal';
                         card.innerHTML = `
                           <img src="${p.image || 'assets/placeholder-post.jpg'}" alt="${p.title || 'Entrada de blog'}">
                           <div class="post-content">
@@ -554,7 +723,6 @@
                 } else {
                     postsGrid.innerHTML = '<p>No hay posts recientes en el blog.</p>';
                 }
-                 // Re-observar elementos si se añaden dinámicamente y se quiere la animación reveal
                 const newRevealElements = postsGrid.querySelectorAll('.reveal');
                 if (newRevealElements.length > 0 && typeof IntersectionObserver !== 'undefined') {
                     const tempObserver = new IntersectionObserver(entries => {
@@ -580,8 +748,8 @@
             const faqItem = button.parentElement;
             const answer = button.nextElementSibling;
             const isExpanded = button.getAttribute('aria-expanded') === 'true';
-
-            // Opcional: cerrar otros items si se quiere que solo uno esté abierto
+            
+            // Si quieres que solo un FAQ esté abierto a la vez, descomenta lo siguiente:
             // document.querySelectorAll('.faq-item.active').forEach(openItem => {
             //    if (openItem !== faqItem) {
             //        openItem.classList.remove('active');
