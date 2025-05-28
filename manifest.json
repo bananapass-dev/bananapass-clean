@@ -1,0 +1,38 @@
+{
+  name BananaPass – Concierge de experiencias en México,
+  short_name BananaPass,
+  description Concierge de experiencias únicas en México.,
+  lang es,
+  start_url ,
+  display standalone,
+  background_color #FAFAFA,
+  theme_color #FFDD57,
+  orientation portrait-primary,
+  scope ,
+  icons [
+    {
+      src logo.png,
+      sizes 192x192,
+      type imagepng,
+      purpose any
+    },
+    {
+      src logo.png,
+      sizes 512x512,
+      type imagepng,
+      purpose any
+    },
+    {
+      src logo.png,
+      sizes 192x192,
+      type imagepng,
+      purpose maskable
+    },
+    {
+      src logo.png,
+      sizes 512x512,
+      type imagepng,
+      purpose maskable
+    }
+  ]
+}
