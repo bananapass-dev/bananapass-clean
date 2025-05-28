@@ -202,7 +202,7 @@
 
 
     /* Hero Section */
-    #hero{min-height:80vh;background:url('assets/hero.jpg')center/cover fixed;display:flex;align-items:center;justify-content:center;position:relative;color:var(--light);text-align:center;padding: 2rem 1rem;}
+    #hero{min-height:80vh;background:url('http://googleusercontent.com/image_generation_content/0')center/cover fixed;display:flex;align-items:center;justify-content:center;position:relative;color:var(--light);text-align:center;padding: 2rem 1rem;}
     #hero::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,.4);}
     #hero .content{position:relative;z-index:1;}
     #hero h1{font-family:var(--font-heading);font-size:clamp(2.5rem,6vw,4rem);margin-bottom:1rem;}
@@ -471,6 +471,14 @@
       <div class="container">
         <h2>Desde nuestro Blog</h2>
         <div class="posts-grid" id="posts-grid">
+          <div class="post-card reveal visible">
+            <img src="http://googleusercontent.com/image_generation_content/1" alt="Tesoros Ocultos de Oaxaca" style="height: 160px; object-fit: cover;">
+            <div class="post-content">
+              <h3>Tesoros Ocultos de Oaxaca: Aventura Más Allá de lo Común</h3>
+              <p>Oaxaca es un universo de cultura y naturaleza. Con BananaPass, explora talleres artesanales secretos, cascadas petrificadas con vistas únicas y experiencias gastronómicas que no encontrarás en las guías turísticas.</p>
+              <a href="/blog/tesoros-ocultos-oaxaca" class="btn btn-secondary" style="align-self: flex-start; padding: 0.5rem 1rem;">Leer más</a>
+            </div>
+          </div>
           </div>
         <div style="text-align:center;margin-top:2rem;"><a href="/blog" class="btn btn-primary">Ver blog completo</a></div>
       </div>
@@ -564,7 +572,7 @@
             progress.style.width = height ? (scroll / height) * 100 + '%' : '0';
         });
     }
-   
+    
     // Navbar scroll effect
     const nav = document.getElementById('navbar');
     if (nav) {
@@ -699,7 +707,7 @@
             e.target.reset();
         });
     }
-   
+    
     // Newsletter Form Submission
     const newsletterForm = document.getElementById('newsletter-form');
     if (newsletterForm) {
@@ -715,9 +723,14 @@
         });
     }
 
-    // Fetch blog posts
+    /*
+    // Fetch blog posts (SECCIÓN COMENTADA TEMPORALMENTE)
+    // Si deseas cargar posts dinámicamente desde una API, puedes descomentar esta sección
+    // y asegurarte de que tu API en /api/posts?limit=3 funcione.
+    // Por ahora, los posts se muestran estáticamente desde el HTML.
+
     const postsGrid = document.getElementById('posts-grid');
-    if (postsGrid) {
+    if (postsGrid && postsGrid.children.length === 0) { // Solo fetchea si no hay posts estáticos
         fetch('/api/posts?limit=3')
             .then(res => {
                 if (!res.ok) throw new Error('Error al cargar posts del blog. Estado: ' + res.status);
@@ -725,7 +738,7 @@
             })
             .then(posts => {
                 if (posts && posts.length > 0) {
-                    postsGrid.innerHTML = ''; // Limpiar por si acaso
+                    // postsGrid.innerHTML = ''; // No limpiar si ya hay estáticos y queremos añadir, o sí si queremos reemplazar
                     posts.forEach(p => {
                         const card = document.createElement('div');
                         card.className = 'post-card reveal';
@@ -739,7 +752,7 @@
                         postsGrid.appendChild(card);
                     });
                 } else {
-                    postsGrid.innerHTML = '<p>No hay posts recientes en el blog.</p>';
+                    // postsGrid.innerHTML = '<p>No hay posts recientes en el blog.</p>';
                 }
                 const newRevealElements = postsGrid.querySelectorAll('.reveal');
                 if (newRevealElements.length > 0 && typeof IntersectionObserver !== 'undefined') {
@@ -756,9 +769,10 @@
             })
             .catch(error => {
                 console.error('Error cargando posts del blog:', error);
-                postsGrid.innerHTML = '<p>No se pudieron cargar las entradas del blog. Intenta más tarde.</p>';
+                // postsGrid.innerHTML = '<p>No se pudieron cargar las entradas del blog. Intenta más tarde.</p>';
             });
     }
+    */
 
     // FAQ Accordion
     document.querySelectorAll('.faq-question').forEach(button => {
@@ -766,16 +780,7 @@
             const faqItem = button.parentElement;
             const answer = button.nextElementSibling;
             const isExpanded = button.getAttribute('aria-expanded') === 'true';
-           
-            // Si quieres que solo un FAQ esté abierto a la vez, descomenta lo siguiente:
-            // document.querySelectorAll('.faq-item.active').forEach(openItem => {
-            //   if (openItem !== faqItem) {
-            //     openItem.classList.remove('active');
-            //     openItem.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
-            //     openItem.querySelector('.faq-answer').style.maxHeight = null;
-            //   }
-            // });
-
+            
             faqItem.classList.toggle('active');
             button.setAttribute('aria-expanded', !isExpanded);
             if (!isExpanded) {
