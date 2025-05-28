@@ -14,7 +14,7 @@
     "@type": "LocalBusiness",
     "name": "BananaPass",
     "url": "https://bananapass.com",
-    "logo": "https://bananapass.com/logo.png",
+    "logo": "https://bananapass.com/logo.png", /* Podrías cambiarlo a /logo.png si tu servidor lo resuelve correctamente o dejar el absoluto si prefieres */
     "description": "Concierge de experiencias únicas en México.",
     "address": {
       "@type": "PostalAddress",
@@ -202,7 +202,7 @@
 
 
     /* Hero Section */
-    #hero{min-height:80vh;background:url('http://googleusercontent.com/image_generation_content/0')center/cover fixed;display:flex;align-items:center;justify-content:center;position:relative;color:var(--light);text-align:center;padding: 2rem 1rem;}
+    #hero{min-height:80vh;background:url('assets/images/hero-background.jpg')center/cover fixed;display:flex;align-items:center;justify-content:center;position:relative;color:var(--light);text-align:center;padding: 2rem 1rem;}
     #hero::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,.4);}
     #hero .content{position:relative;z-index:1;}
     #hero h1{font-family:var(--font-heading);font-size:clamp(2.5rem,6vw,4rem);margin-bottom:1rem;}
@@ -327,7 +327,7 @@
   <nav id="navbar" aria-label="Barra de navegación principal">
     <div class="nav-container">
       <a href="#hero" class="logo" aria-label="BananaPass Inicio">
-        <img src="https://bananapass.com/logo.png" alt="BananaPass Logo">
+        <img src="/logo.png" alt="BananaPass Logo">
       </a>
       <div class="nav-links"> <a href="#benefits">Beneficios</a>
         <a href="#how-it-works">Cómo Funciona</a>
@@ -472,7 +472,7 @@
         <h2>Desde nuestro Blog</h2>
         <div class="posts-grid" id="posts-grid">
           <div class="post-card reveal visible">
-            <img src="http://googleusercontent.com/image_generation_content/1" alt="Tesoros Ocultos de Oaxaca" style="height: 160px; object-fit: cover;">
+            <img src="assets/images/blog-oaxaca.jpg" alt="Tesoros Ocultos de Oaxaca" style="height: 160px; object-fit: cover;">
             <div class="post-content">
               <h3>Tesoros Ocultos de Oaxaca: Aventura Más Allá de lo Común</h3>
               <p>Oaxaca es un universo de cultura y naturaleza. Con BananaPass, explora talleres artesanales secretos, cascadas petrificadas con vistas únicas y experiencias gastronómicas que no encontrarás en las guías turísticas.</p>
@@ -743,12 +743,12 @@
                         const card = document.createElement('div');
                         card.className = 'post-card reveal';
                         card.innerHTML = `
-                          <img src="${p.image || 'assets/placeholder-post.jpg'}" alt="${p.title || 'Entrada de blog'}">
-                          <div class="post-content">
-                            <h3>${p.title || 'Título no disponible'}</h3>
-                            <p>${p.excerpt || 'Extracto no disponible.'}</p>
-                            <a href="/blog/${p.slug || '#'}" class="btn btn-secondary" style="align-self: flex-start; padding: 0.5rem 1rem;">Leer más</a>
-                          </div>`;
+                            <img src="${p.image || 'assets/images/placeholder-post.jpg'}" alt="${p.title || 'Entrada de blog'}">
+                            <div class="post-content">
+                                <h3>${p.title || 'Título no disponible'}</h3>
+                                <p>${p.excerpt || 'Extracto no disponible.'}</p>
+                                <a href="/blog/${p.slug || '#'}" class="btn btn-secondary" style="align-self: flex-start; padding: 0.5rem 1rem;">Leer más</a>
+                            </div>`;
                         postsGrid.appendChild(card);
                     });
                 } else {
